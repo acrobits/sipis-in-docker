@@ -1,0 +1,95 @@
+<Sipis xmlns="http://acrobits.net/SipisSettings.xsd">
+  <Server Name="SipisInDocker" Address="0.0.0.0" Port="14998" />
+  <HttpServer Address="0.0.0.0" Port="5000" />
+  <Administrator UserName="admin" Password="ADMINPASSWORDHERE" />
+  <Database OpenString="host=dbsipis port=5432 dbname=sipis user=sipis password='This does not matter much but change it.'" />
+  <Lock FileName="/var/run/Sipis.lock"/>
+
+  <Log
+      FileName="/dev/null"
+      InstanceFileName="/dev/null"
+      ProblematicInstancesAutomatically="No"
+      Level="Warning"
+      Stdio="Stdout">
+
+    <!-- Uncoment the following section to receive emails from SIPIS -->
+    
+    <!--
+    <Email To="admin@example.com" From="sipis1@example.com">
+      <Summary Enabled="Yes">
+        <Period Days="1" Hours="0" Minutes="0" />
+        <StartingAt Hour="3" Minute="0" Second="0" />
+      </Summary>
+      <Excerpt Enabled="Yes">
+        <MinPeriod Days="0" Hours="0" Minutes="5" />
+        <MaxSize MegaBytes="0" KiloBytes="512" Bytes="0" />
+        <Filter>
+          <Exclude Enabled="Yes" /> 
+          <Include Severity="Warning" Enabled="Yes"/>
+          <Include Severity="Error" Enabled="Yes"/>
+        </Filter>
+      </Excerpt>
+    </Email>
+    -->
+    <Http RequestBody="No">
+      <Filter>
+        <Exclude Response="200" Enabled="Yes" />
+      </Filter>
+    </Http>
+  </Log>
+  <NotificationServers>
+    <NotificationServer Name="*" Host="pnm.cloudsoftphone.com" Port="6552" Premium="No" RequiresTls="Yes" />
+  </NotificationServers>
+
+  <TlsClientCertificates>
+    <!--
+    <Certificate
+        Host=""
+        FileName=""
+        RsaPrivateKeyFileName=""/>
+    -->
+  </TlsClientCertificates>
+
+  <!--
+  <TrustedCertificates
+    FileName="" />
+  -->
+  
+  <Instance
+    UserAgent="Acrobits SIPIS in Docker">
+    <MaxAge Days="3" Hours="0" Minutes="0" Seconds="0" />
+    <PremiumMaxAge Days="7" Hours="0" Minutes="0" Seconds="0" />
+    <NotRegisteredMaxAge Hours="12" />
+    <AboutToExpireIn>
+      <Silent Hours="24" />
+      <Intrusive Hours="12" />
+    </AboutToExpireIn>
+    <AboutToExpirePeriod>
+      <Silent Hours="1" />
+      <Intrusive Hours="11" />
+    </AboutToExpirePeriod>
+    <KeepAlivePackets Enabled="Yes">
+      <Period Days="0" Hours="0" Minutes="0" Seconds="30" />
+    </KeepAlivePackets>
+  </Instance>
+
+  <IncomingCall>
+    <NotAnsweredMaxAge Days="0" Hours="0" Minutes="2" Seconds="0" />
+  </IncomingCall>
+
+  <IncomingTextMessage>
+    <Filter>
+      <Entry Action="AcceptAndDrop" Enabled="Yes">
+        <Header Name="Content-Type" Equal="application/im-iscomposing+xml" />
+      </Entry>
+      <Entry Action="Reject" Enabled="Yes">
+        <Header Name="Content-Length" UintGt="4194304" />
+        <RejectWith Code="413" Phrase="Request Entity Too Large" />
+      </Entry>
+    </Filter>
+  </IncomingTextMessage>
+
+  <PushTest>
+    <MinAge Days="7" Hours="0" Minutes="0" Seconds="0" />
+  </PushTest>
+</Sipis>

@@ -1,0 +1,83 @@
+---
+version: "2"
+networks:
+    sipisnet:
+
+services:
+    lb2:
+        image: docker.acrobits.net/releases/lb2
+        volumes:
+            - ./certs:/certs
+            - ./lb2:/etc/acrobits/LoadBalancer2
+        ports:
+            - 24998:24998
+            - 4998:4998/udp
+            - 4998:4998/tcp
+        networks:
+            sipisnet:
+                aliases:
+                    - lb2
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 20m
+
+    dbsipis:
+        image: postgres:15
+        volumes:
+            - dbdata:/var/lib/postgresql/data
+            - ./db/sipis.sql:/docker-entrypoint-initdb.d/sipis.sql
+        networks:
+            sipisnet:
+                aliases:
+                    - dbsipis
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 20m
+        environment:
+            POSTGRES_PASSWORD: "This does not matter much but change it."
+            POSTGRES_USER: "sipis"
+            POSTGRES_DB: "sipis"
+    sipis:
+        depends_on:
+            - dbsipis
+        image: docker.acrobits.net/releases/sipis
+        volumes:
+            - ./sipis:/etc/sipis
+            - ./lb2:/etc/acrobits/LoadBalancer2
+        restart: on-failure
+        networks:
+            sipisnet:
+                aliases:
+                    - sipis
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 20m
+        ulimits:
+            nofile: 65535
+    stunnelsipis:
+        depends_on:
+            - sipis
+        build: "stunnel"
+        volumes:
+            - ./certs:/certs
+        ports:
+            - 443:443
+        networks:
+            sipisnet:
+                aliases:
+                    - stunnelsipis
+        logging:
+            driver: "json-file"
+            options:
+                max-size: 20m
+
+    keycreate:
+        build: keycreate
+        volumes:
+            - ./sipis:/etc/sipis
+
+volumes:
+  dbdata:

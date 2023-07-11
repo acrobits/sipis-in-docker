@@ -1,0 +1,145 @@
+<!--
+  The settings file is expected to reside
+  in the "/etc/acrobits/LoadBalancer2/Settings.xml" file.
+-->
+
+<LoadBalancer2>
+
+  <Frontend>
+    
+    <Udp Address="0:4998" />
+      <!--
+                 Udp: zero or more
+        Udp[Address]: required
+                      Host ':' Port
+                      Host = IPv4 | '[' IPv4 ']' | '[' IPv6 ']'
+                      0 < Port <= 65535
+      -->
+      
+    <Tcp Address="0:4998" />
+      <!--
+                 Tcp: zero or more
+        Tcp[Address]: required
+                      Host ':' Port
+                      Host = IPv4 | '[' IPv4 ']' | '[' IPv6 ']'
+                      0 < Port <= 65535
+      -->
+      
+   <Tls Address="0:24998" />
+      <!--
+                 Tls: zero or more
+        Tls[Address]: required
+                      Host ':' Port
+                      Host = IPv4 | '[' IPv4 ']' | '[' IPv6 ']'
+                      0 < Port <= 65535
+      -->
+      
+    <DefaultTlsOptions
+        MinVersion="1.2"
+        MaxVersion="1.2"
+        MinRsaModulusSizeInBits="2048"
+        MinDhModulusSizeInBits="2048">
+
+        <CipherSuites>
+            TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+            TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+            TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+            TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+            TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384
+            TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
+            TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+            TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+            TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+            TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+            TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+            TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+            <!--TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA-->
+            <!--TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA-->
+            TLS_DHE_RSA_WITH_AES_256_GCM_SHA384
+            TLS_DHE_RSA_WITH_AES_256_CBC_SHA256
+            TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+            TLS_DHE_RSA_WITH_AES_128_CBC_SHA256
+            TLS_DHE_RSA_WITH_AES_256_CBC_SHA
+            TLS_DHE_RSA_WITH_AES_128_CBC_SHA
+            <!--TLS_DHE_RSA_WITH_3DES_EDE_CBC_SHA-->
+            TLS_RSA_WITH_AES_256_GCM_SHA384
+            TLS_RSA_WITH_AES_256_CBC_SHA256
+            TLS_RSA_WITH_AES_128_GCM_SHA256
+            TLS_RSA_WITH_AES_128_CBC_SHA256
+            TLS_RSA_WITH_AES_256_CBC_SHA
+            TLS_RSA_WITH_AES_128_CBC_SHA
+            <!--TLS_RSA_WITH_3DES_EDE_CBC_SHA-->
+            <!--TLS_ECDHE_ECDSA_WITH_RC4_128_SHA-->
+            <!--TLS_ECDHE_RSA_WITH_RC4_128_SHA-->
+            <!--TLS_RSA_WITH_RC4_128_MD5-->
+            <!--TLS_RSA_WITH_RC4_128_SHA-->
+        </CipherSuites>
+        
+        <EllipticCurves>
+            brainpoolp384r1
+            brainpoolp512r1
+            brainpoolp256r1
+            secp384r1
+            secp521r1
+            secp256k1
+            secp256r1
+            secp224k1
+            secp224r1
+            secp192k1
+            secp192r1
+            secp160k1
+            secp160r1
+            secp160r2
+        </EllipticCurves>
+
+        <Certificate
+            FileName="/certs/fullchain.pem" />
+        <PrivateKey
+            FileName="/certs/privkey.pem" />
+    </DefaultTlsOptions>
+  
+  </Frontend>
+  
+  <Backend>
+  
+    <Sipis SelectorPrefix="" AppIdPrefix="" Address="sipis:14998" />
+      <!--
+                        Sipis: one or more
+                               The selector and app-id matching is done in the
+                               same order as specified here and the first Sipis
+                               element whose SelectorPrefix and AppIdPrefix
+                               matches the actual selector and app-id wins.
+                               Note that empty prefix matches all values
+                               (every value begins with an empty prefix).
+        Sipis[SelectorPrefix]: optional; default ""
+                               Sequence of zero or more hexadecimal digits.
+           Sipis[AppIdPrefix]: optional; default ""
+               Sipis[Address]: required
+                               Host ':' Port
+                               Host = IPv4 | Name | '[' IPv4 ']' | '[' IPv6 ']' | '[' Name ']'
+                               0 < Port <= 65535
+      -->
+  
+  </Backend>
+  
+  <Sentry Enabled="No" Dsn="" ServerName="">
+    <!--
+                  Sentry: optional
+         Sentry[Enabled]: Yes|No; optional; default:Yes
+             Sentry[Dsn]: required
+      Sentry[ServerName]: optional; default:LoadBalancer2
+    -->
+
+    <!--
+    <Tags
+      Tag1="Value1"
+      ...
+      TagN="ValueN" />
+    -->
+      <!--
+        Sentry/Tags:  optional
+      -->
+
+  </Sentry>
+
+</LoadBalancer2>
